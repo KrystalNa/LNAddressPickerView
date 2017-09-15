@@ -114,14 +114,29 @@
     }
 }
 
-- (CGFloat)pickerView:(UIPickerView *)pickerView widthForComponent:(NSInteger)component {
-    if (component == 0) {
-        return 110;
-    } else if (component == 1) {
-        return 100;
-    } else {
-        return 110;
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:   (NSInteger)component reusingView:(UIView *)view{
+    UILabel* label = nil;
+    
+    CGFloat height = 30;;
+    if (height<21) {
+        height =21;
+    }else{
+        height=30;
     }
+    
+    if (view == nil) {
+        
+        label = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, floor(pickerView.width/3), height)];
+        label.textAlignment=NSTextAlignmentCenter;
+        label.adjustsFontSizeToFitWidth=YES;//设置字体大小是否适应lalbel宽度
+        
+        [label setTextColor:[UIColor blackColor]];
+        [label setFont:[UIFont systemFontOfSize:20]];
+    }
+    
+    label.text = [self pickerView:pickerView titleForRow:row forComponent:component];;
+    
+    return label;
 }
 
 - (void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component {
@@ -138,20 +153,21 @@
             self.districtArray = nil;
         }
     }
-    [pickerView selectedRowInComponent:1];
-    [pickerView reloadComponent:1];
-    [pickerView selectedRowInComponent:2];
     
+    if (component == 0) {
+        [pickerView selectRow:0 inComponent:1 animated:NO];
+        [pickerView selectRow:0 inComponent:2 animated:NO];
+    }
     if (component == 1) {
         if (self.selectedArray.count > 0 && self.cityArray.count > 0) {
             self.districtArray = [[self.selectedArray objectAtIndex:0] objectForKey:[self.cityArray objectAtIndex:row]];
         } else {
             self.districtArray = nil;
         }
-        [pickerView selectRow:1 inComponent:2 animated:YES];
+        [pickerView selectRow:0 inComponent:2 animated:NO];
     }
     
-    [pickerView reloadComponent:2];
+    [pickerView reloadAllComponents];
 }
 
 #pragma mark - action
